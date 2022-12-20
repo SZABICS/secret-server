@@ -17,8 +17,18 @@ class SecretResponse
     const STATUS_CODE_NOT_FOUND = 404;
     const STATUS_CODE_INVALID_INPUT = 405;
 
+    const STATUS_CODE_OK_TEXT = "OK";
+    const STATUS_CODE_BAD_REQUEST_TEXT = "Bad Request";
+    const STATUS_CODE_NOT_FOUND_TEXT = "Secret not fount";
+    const STATUS_CODE_INVALID_INPUT_TEXT = "Invalid input";
+
     const RESPONSE_TYPE_JSON = "application/json";
     const RESPONSE_TYPE_XML = "application/xml";
+
+    private static $responseFormatsArray = [
+        self::RESPONSE_TYPE_JSON => 'json',
+        self::RESPONSE_TYPE_XML => 'xml'
+    ];
 
     /**
      * Response a Secret model in choosen content type.
@@ -27,8 +37,7 @@ class SecretResponse
      * @param $model
      * @return string|array
      */
-    public static function modelResponse($acceptHeader = "application/json", $model = "") {
-        $returnStatusCode = self::STATUS_CODE_OK;
+    public static function modelResponse($model, $acceptHeader = "application/json") {
         switch ($acceptHeader) {
             case self::RESPONSE_TYPE_JSON: {
                 Yii::$app->response->format = "json";
@@ -41,7 +50,7 @@ class SecretResponse
                 break;
             }
             default: {
-                return self::jsonResponse($returnStatusCode, "BadRequest");
+                return self::errorResponseByType($acceptHeader, self::STATUS_CODE_BAD_REQUEST, self::STATUS_CODE_BAD_REQUEST_TEXT);
                 break;
             }
         }
@@ -50,30 +59,18 @@ class SecretResponse
     }
 
     public static function errorResponseByType($responseType, $statusCode, $statusText) {
-        switch ($responseType) {
-            case self::RESPONSE_TYPE_JSON: return self::jsonResponse($statusCode, $statusText); break;
-            case self::RESPONSE_TYPE_XML: return self::xmlResponse($statusCode, $statusText); break;
-            default:  return self::jsonResponse(self::STATUS_CODE_NOT_FOUND, "NotFound"); break;
+        if(key_exists($responseType, self::$responseFormatsArray)) {
+            return self::response(self::$responseFormatsArray[$responseType], $statusCode, $statusText);
         }
+        return self::response(self::RESPONSE_TYPE_JSON, self::STATUS_CODE_BAD_REQUEST, $statusText);
     }
 
-    private static function jsonResponse($statusCode, $statusText) {
-        header($_SERVER["SERVER_PROTOCOL"], true, $statusCode);
-        Yii::$app->response->format = "json";
+    private static function response($responseType, $statusCode, $statusText) {
+        Yii::$app->response->statusCode = $statusCode;
+        Yii::$app->response->format = $responseType;
         return [
             "code" => $statusCode,
             "description" => $statusText
-        ];
-    }
-
-    private static function xmlResponse($statusCode, $statusText) {
-        header($_SERVER["SERVER_PROTOCOL"], true, $statusCode);
-        Yii::$app->response->format = "xml";
-        return [
-            "Error" => [
-                "Code" => $statusCode,
-                "Description" => $statusText
-            ]
         ];
     }
 }

@@ -45,11 +45,11 @@ class V1Controller extends Controller
     public function actionSecret() {
         if(Yii::$app->request->isPost) {
             if($model = Secret::addSecret(Secret::makeModelFromPostData(Yii::$app->request->post()))) {
-                return SecretResponse::modelResponse(self::$acceptHeader, $model);
+                return SecretResponse::modelResponse($model, self::$acceptHeader);
             }
-            return SecretResponse::errorResponseByType(self::$acceptHeader, SecretResponse::STATUS_CODE_INVALID_INPUT, "Invalid input");
+            return SecretResponse::errorResponseByType(self::$acceptHeader, SecretResponse::STATUS_CODE_INVALID_INPUT, SecretResponse::STATUS_CODE_INVALID_INPUT_TEXT);
         }
-        SecretResponse::errorResponseByType(self::$acceptHeader, SecretResponse::STATUS_CODE_BAD_REQUEST, "Bad Request at this method");
+        SecretResponse::errorResponseByType(self::$acceptHeader, SecretResponse::STATUS_CODE_BAD_REQUEST, SecretResponse::STATUS_CODE_BAD_REQUEST_TEXT);
     }
 
     /**
@@ -69,11 +69,11 @@ class V1Controller extends Controller
         if(Yii::$app->request->isGet) {
             $model = Secret::getSecretByHash($hash);
             if(empty($model)) {
-                return SecretResponse::errorResponseByType(self::$acceptHeader, SecretResponse::STATUS_CODE_NOT_FOUND, "Secret not found");
+                return SecretResponse::errorResponseByType(self::$acceptHeader, SecretResponse::STATUS_CODE_NOT_FOUND, SecretResponse::STATUS_CODE_NOT_FOUND_TEXT);
             }
-            return SecretResponse::modelResponse(self::$acceptHeader, $model);
+            return SecretResponse::modelResponse($model, self::$acceptHeader);
         }
-        SecretResponse::errorResponseByType(self::$acceptHeader, SecretResponse::STATUS_CODE_BAD_REQUEST, "Bad Request at this method");
+        SecretResponse::errorResponseByType(self::$acceptHeader, SecretResponse::STATUS_CODE_BAD_REQUEST, SecretResponse::STATUS_CODE_BAD_REQUEST_TEXT);
     }
 
 }
