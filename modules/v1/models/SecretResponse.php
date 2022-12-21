@@ -22,6 +22,7 @@ class SecretResponse
     const STATUS_CODE_BAD_REQUEST_TEXT = "Bad Request";
     const STATUS_CODE_NOT_FOUND_TEXT = "Secret not fount";
     const STATUS_CODE_INVALID_INPUT_TEXT = "Invalid input";
+    const STATUS_CODE_BAD_REQUEST_TEXT_TYPE_PROBLEM = "Bad Request! Response type must be set at Accept header!";
 
     const RESPONSE_TYPE_JSON = "application/json";
     const RESPONSE_TYPE_XML = "application/xml";
@@ -51,7 +52,7 @@ class SecretResponse
                 break;
             }
             default: {
-                return self::errorResponseByType($acceptHeader, self::STATUS_CODE_BAD_REQUEST, self::STATUS_CODE_BAD_REQUEST_TEXT);
+                return self::errorResponseByType($acceptHeader, self::STATUS_CODE_BAD_REQUEST, self::STATUS_CODE_BAD_REQUEST_TEXT_TYPE_PROBLEM);
                 break;
             }
         }
