@@ -15,6 +15,7 @@ $config = [
         '@npm'   => '@vendor/npm-asset',
     ],
     'modules' => [
+        // Init our module
         'v1' => [
             'class' => 'app\modules\v1\Module',
         ],
