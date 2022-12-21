@@ -29,7 +29,11 @@ class ModelConverter
      */
     public static function convertModelToAttributesArray($model) {
         if(empty($model)) return [];
-        return $model->attributes;
+        $attributes = $model->attributes;
+        if(isset($attributes["id"])) {
+            unset($attributes["id"]);
+        }
+        return $attributes;
     }
 
     /**
@@ -51,6 +55,7 @@ class ModelConverter
 
         $attributeReturnArray = [];
         foreach ($model->attributes as $attributeName => $attributeValue) {
+            if($attributeName == "id") continue;
             $attributeReturnArray[$rootTag][$attributeName] = $attributeValue;
         }
         return $attributeReturnArray;

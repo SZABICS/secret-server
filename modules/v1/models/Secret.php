@@ -70,6 +70,9 @@ class Secret extends \yii\db\ActiveRecord
         parent::afterFind();
         $this->remainingViews--;
         $this->update(false);
+        if($this->expiresAt == null) {
+            $this->expiresAt = "";
+        }
     }
 
     /**
@@ -148,8 +151,7 @@ class Secret extends \yii\db\ActiveRecord
     private function calculateExpireAtByMinutes($createTime, $minutes = 0) {
         if(empty($minutes)) {
             $this->expiresAt = "";
-        }
-        $this->expiresAt = date('Y-m-d H:i:s', strtotime($createTime." +".$minutes." minutes"));
+        } else $this->expiresAt = date('Y-m-d H:i:s', strtotime($createTime." +".$minutes." minutes"));
     }
 
 }
