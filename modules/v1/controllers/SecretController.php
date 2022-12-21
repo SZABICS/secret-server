@@ -25,12 +25,14 @@ class SecretController extends Controller
      * It's not a solution!, but now for the example secret server
      * We set the 'enableCsrfValidation=false now to prevent 'BadRequestHttpException on POST.
      * This action will run before each action!
+     * Now, we will set the Access-Control CORS to '*', because of test requests it gets from other sites.
      * @param $action
      * @return bool
      * @throws \yii\web\BadRequestHttpException
      */
     public function beforeAction($action)
     {
+        header("Access-Control-Allow-Origin:*");
         $this->enableCsrfValidation = false;
         self::$acceptHeader = $_SERVER['HTTP_ACCEPT'];
         return parent::beforeAction($action);
@@ -40,8 +42,11 @@ class SecretController extends Controller
      * This method to send POST requests and store the new Secrets by the given values.
      * But first make some validation of the POST datas correctness.
      * The URL must be set up in /config/web.php -> UrlManager section
+     *
      * The valid path will:
      * 'v1/secret' => 'v1/secret/secret'
+     *
+     * This will response Secret data or error messages in chosen type.
      * @return string|array
      */
     public function actionSecret() {
@@ -63,6 +68,8 @@ class SecretController extends Controller
      * The URL must be set up in /config/web.php -> UrlManager section
      * The valid path will:
      * 'v1/secret/<hash:([-a-zA-Z0-9_\-\@\.]*)>' => 'v1/secret/get-secret-by-hash'
+     *
+     * This will response Secret data or error messages in chosen type.
      * @param $hash
      * @return string|array
      */

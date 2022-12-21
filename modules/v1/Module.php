@@ -5,6 +5,7 @@ namespace app\modules\v1;
 /**
  * Module init class for our Secret Server API V1 module.
  * This Module file must be set in config/web.php
+ * Extrends from the base Module class.
  *
  * Class Module
  * @package app\modules\v1
