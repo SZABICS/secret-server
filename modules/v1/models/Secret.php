@@ -1,6 +1,6 @@
 <?php
 
-namespace app\models;
+namespace app\modules\v1\models;
 
 use Yii;
 use yii\db\ActiveRecord;
@@ -75,6 +75,10 @@ class Secret extends \yii\db\ActiveRecord
     /**
      * Return a Secret model from database by the given hash string.
      * If the hash is empty or not found on the database, then it will return null.
+     * Conditions:
+     * hash must be match.
+     * remainingViews must higher than MIN_REMAINING_TIME const.
+     * expiresAt must be empty or higher than actual time.
      * @param string $hash
      * @return ActiveRecord|null
      */
@@ -93,6 +97,7 @@ class Secret extends \yii\db\ActiveRecord
 
     /**
      * Insert the given Secret model to the database.
+     * The save() method does some validation too, so if it will give back fasle, then the model is not stored.
      * Returns the model on success, and false when there are any data validation problem.
      * @param Secret $secretModel
      * @return ActiveRecord|null
@@ -103,8 +108,18 @@ class Secret extends \yii\db\ActiveRecord
                 return $secretModel;
             }
         }
+        return null;
     }
 
+
+    /**
+     * Make a Secret model from the given $postData property.
+     * We go trough on some property validation.
+     * The 'expireAfterViews' value must be higher than zero.
+     * If there are any problem with datas, the method returns a null value.
+     * @param $postData
+     * @return Secret|null
+     */
     public static function makeModelFromPostData($postData) {
         $secretText = isset($postData["secret"]) ? $postData["secret"] : "";
         $expireAfterViews = isset($postData["expireAfterViews"]) ? $postData["expireAfterViews"] : "";
@@ -122,7 +137,14 @@ class Secret extends \yii\db\ActiveRecord
         return null;
     }
 
-
+    /**
+     * This method calculates the expire time of the secret.
+     * It needs the time of creation (createTime) and the minutes to add.
+     * If the minutes equal to zero, then the secret does not have expire time.
+     * If the minutes higher than zero, plus the createTime with them.
+     * @param $createTime
+     * @param int $minutes
+     */
     private function calculateExpireAtByMinutes($createTime, $minutes = 0) {
         if(empty($minutes)) {
             $this->expiresAt = "";

@@ -1,27 +1,24 @@
 <?php
 
-namespace app\controllers;
+namespace app\modules\v1\controllers;
 
-use app\models\ModelConverter;
-use app\models\Secret;
-use app\models\SecretGetResponse;
-use app\models\SecretPostResponse;
-use app\models\SecretResponse;
 use Yii;
-use yii\web\BadRequestHttpException;
 use yii\web\Controller;
-use yii\web\NotFoundHttpException;
-use yii\web\Response;
+use app\modules\v1\models\Secret;
+use app\modules\v1\models\SecretResponse;
 
 /**
  * Class V1Controller
  * API controller V1 version.
- * This API is a solution for store and show Secrets through POST and GET requests.
+ * This API is a solution to store and show Secrets through POST and GET requests.
  * @package app\controllers
  */
-class V1Controller extends Controller
+class SecretController extends Controller
 {
 
+    /**
+     * @var string $acceptHeader Store the accept header from Header()
+     */
     public static $acceptHeader;
 
     /**
@@ -40,7 +37,12 @@ class V1Controller extends Controller
     }
 
     /**
-     *
+     * This method to send POST requests and store the new Secrets by the given values.
+     * But first make some validation of the POST datas correctness.
+     * The URL must be set up in /config/web.php -> UrlManager section
+     * The valid path will:
+     * 'v1/secret' => 'v1/secret/secret'
+     * @return string|array
      */
     public function actionSecret() {
         if(Yii::$app->request->isPost) {
@@ -49,7 +51,7 @@ class V1Controller extends Controller
             }
             return SecretResponse::errorResponseByType(self::$acceptHeader, SecretResponse::STATUS_CODE_INVALID_INPUT, SecretResponse::STATUS_CODE_INVALID_INPUT_TEXT);
         }
-        SecretResponse::errorResponseByType(self::$acceptHeader, SecretResponse::STATUS_CODE_BAD_REQUEST, SecretResponse::STATUS_CODE_BAD_REQUEST_TEXT);
+        return SecretResponse::errorResponseByType(self::$acceptHeader, SecretResponse::STATUS_CODE_BAD_REQUEST, SecretResponse::STATUS_CODE_BAD_REQUEST_TEXT);
     }
 
     /**
@@ -59,9 +61,8 @@ class V1Controller extends Controller
      * The expire date
      *
      * The URL must be set up in /config/web.php -> UrlManager section
-     * The valid path:
-     * v1 -> Controller, secret -> Action, hash will be the parameter to get.
-     * 'v1/secret/<hash:([-a-zA-Z0-9_\-\@\.]*)>' => 'v1/get-secret-by-hash'
+     * The valid path will:
+     * 'v1/secret/<hash:([-a-zA-Z0-9_\-\@\.]*)>' => 'v1/secret/get-secret-by-hash'
      * @param $hash
      * @return string|array
      */
@@ -73,7 +74,7 @@ class V1Controller extends Controller
             }
             return SecretResponse::modelResponse($model, self::$acceptHeader);
         }
-        SecretResponse::errorResponseByType(self::$acceptHeader, SecretResponse::STATUS_CODE_BAD_REQUEST, SecretResponse::STATUS_CODE_BAD_REQUEST_TEXT);
+        return SecretResponse::errorResponseByType(self::$acceptHeader, SecretResponse::STATUS_CODE_BAD_REQUEST, SecretResponse::STATUS_CODE_BAD_REQUEST_TEXT);
     }
 
 }

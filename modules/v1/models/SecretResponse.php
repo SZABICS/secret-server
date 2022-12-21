@@ -1,14 +1,15 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: szabi
+ * User: szabics
  * Date: 2022. 12. 20.
  * Time: 19:52
  */
 
-namespace app\models;
+namespace app\modules\v1\models;
 
 use Yii;
+use app\models\ModelConverter;
 
 class SecretResponse
 {
@@ -58,13 +59,6 @@ class SecretResponse
         return $returnContent;
     }
 
-    public static function errorResponseByType($responseType, $statusCode, $statusText) {
-        if(key_exists($responseType, self::$responseFormatsArray)) {
-            return self::response(self::$responseFormatsArray[$responseType], $statusCode, $statusText);
-        }
-        return self::response(self::RESPONSE_TYPE_JSON, self::STATUS_CODE_BAD_REQUEST, $statusText);
-    }
-
     private static function response($responseType, $statusCode, $statusText) {
         Yii::$app->response->statusCode = $statusCode;
         Yii::$app->response->format = $responseType;
@@ -72,5 +66,10 @@ class SecretResponse
             "code" => $statusCode,
             "description" => $statusText
         ];
+    }
+
+    public static function errorResponseByType($responseType, $statusCode, $statusText) {
+        $returnResponseType = key_exists($responseType, self::$responseFormatsArray) ? self::$responseFormatsArray[$responseType] : self::$responseFormatsArray[self::RESPONSE_TYPE_JSON];
+        return self::response($returnResponseType, $statusCode, $statusText);
     }
 }

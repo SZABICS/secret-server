@@ -14,6 +14,11 @@ $config = [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
     ],
+    'modules' => [
+        'v1' => [
+            'class' => 'app\modules\v1\Module',
+        ],
+    ],
     'components' => [
         'request' => [
             'cookieValidationKey' => 'XLYy3R1ZfFEnJoXFKxud3QF4USBFlVkm',
@@ -48,28 +53,12 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
-                'v1/secret/<hash:([-a-zA-Z0-9_\-\@\.]*)>' => 'v1/get-secret-by-hash'
+                'v1/secret' => 'v1/secret/secret',
+                'v1/secret/<hash:([-a-zA-Z0-9_\-\@\.]*)>' => 'v1/secret/get-secret-by-hash'
             ],
         ],
     ],
     'params' => $params,
 ];
-/*
-if (YII_ENV_DEV) {
-    // configuration adjustments for 'dev' environment
-    $config['bootstrap'][] = 'debug';
-    $config['modules']['debug'] = [
-        'class' => 'yii\debug\Module',
-        // uncomment the following to add your IP if you are not connecting from localhost.
-        //'allowedIPs' => ['127.0.0.1', '::1'],
-    ];
 
-    $config['bootstrap'][] = 'gii';
-    $config['modules']['gii'] = [
-        'class' => 'yii\gii\Module',
-        // uncomment the following to add your IP if you are not connecting from localhost.
-        //'allowedIPs' => ['127.0.0.1', '::1'],
-    ];
-}
-*/
 return $config;

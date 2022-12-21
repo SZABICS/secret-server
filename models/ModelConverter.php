@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: szabi
+ * User: szabics
  * Date: 2022. 12. 20.
  * Time: 18:56
  */
@@ -10,6 +10,7 @@ namespace app\models;
 
 use Yii;
 use yii\base\Model;
+use yii\web\XmlResponseFormatter;
 
 /**
  * Class ModelConverter
@@ -21,7 +22,8 @@ class ModelConverter
 {
 
     /**
-     * This method gives back a JSON data by the given model property.
+     * This method gives back a Model attributes array.
+     * The $model poperty must be a model extended from base Model
      * @param Model $model
      * @return array
      */
@@ -33,12 +35,13 @@ class ModelConverter
     /**
      * This method gives back an XML data by the given model property.
      * It will make an XML string with the model attributes and the model Class root tag.
+     * Itt will set the type of response to a custom type and we put its schema.
      * @param Model $model
      * @return array
      */
     public static function convertModelAttributesToXml($model) {
         if(empty($model)) return [];
-        $xml = new \yii\web\XmlResponseFormatter;
+        $xml = new XmlResponseFormatter;
         $classNameArray = explode("\\", $model::class);
         $rootTag = end($classNameArray);
         $xml->rootTag = "";
