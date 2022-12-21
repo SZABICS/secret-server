@@ -4,6 +4,7 @@
 http://api.secretserverapi.nhely.hu
 
 ###Endpoints
+
 I tested the Endpoints in POSTMan, the Swagger tester did not worked because of HTTPS laoding (My endpoints just in HTTP).
 
 ---
