@@ -1,5 +1,8 @@
 # Secret Server Coding Task
 
+## Reqs
+php 8.1
+
 ## URLs
 http://api.secretserverapi.nhely.hu
 
